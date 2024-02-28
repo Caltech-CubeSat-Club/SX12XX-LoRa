@@ -126,6 +126,7 @@ class SX127XLT
 
     void setupLoRa(uint32_t Frequency, int32_t Offset, uint8_t modParam1, uint8_t modParam2, uint8_t  modParam3, uint8_t modParam4);
     void setupLoRa(uint32_t Frequency);
+    void setupFSK(uint32_t frequency, int32_t offset = 0, uint8_t deviation = 0x52, uint8_t packet_config = 0x09);
     uint8_t getLoRaSF();
     uint8_t getLoRaCodingRate();
     uint8_t getOptimisation();

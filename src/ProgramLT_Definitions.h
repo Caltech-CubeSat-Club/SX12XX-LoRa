@@ -23,6 +23,7 @@ const char LocationPacket = 'L';        //LT library tracker location packet in 
 const char LocationBinaryPacket = 's';  //short location packet in binary format
 const char NoFix = 'F';                 //GPS no fix
 const char NoGPS = 'G';                 //No GPS found, or GPS error.
+const char NoSD = 'S';                  //SD Card error
 const char ACK = 'A';                   //Acknowledge
 const char NACK = 'N';                  //Not Acknowledge, error
 const char AFC = 'a';                   //Packet sent for AFC purposes

@@ -4058,6 +4058,22 @@ void SX127XLT::setupDirect(uint32_t frequency, int32_t offset)
 }
 
 
+void SX127XLT::setupFSK(uint32_t frequency, int32_t offset = 0, uint8_t deviation = 0x52, uint8_t packet_config = 0x09)
+{
+  //setup LoRa device for FSK modulation mode
+#ifdef SX127XDEBUG1
+  Serial.println(F("setupFSK() "));
+#endif
+
+  _PACKET_TYPE = PACKET_TYPE_GFSK;            //need to swap packet type
+  setPacketType(PACKET_TYPE_GFSK);                //set the packet type
+  writeRegister(REG_DETECTOPTIMIZE, 0x00);    //set continuous mode
+  setRfFrequency(frequency, offset);
+  writeRegister(REG_FDEVLSB, deviation);       //set deviation
+  writeRegister(REG_LRTEST30, packet_config);  //set the packet config
+}
+
+
 int8_t SX127XLT::getDeviceTemperature()
 {
 #ifdef SX127XDEBUG1
