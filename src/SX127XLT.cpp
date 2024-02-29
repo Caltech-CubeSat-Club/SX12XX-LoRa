@@ -2623,7 +2623,7 @@ uint8_t SX127XLT::transmitFSK(uint8_t *txbuffer, uint8_t size, uint32_t txtimeou
 
 
   setTxParams(txpower, RADIO_RAMP_DEFAULT);            //TX power and ramp time
-  setDioIrqParams(IRQ_RADIO_ALL, IRQ_TX_DONE, 0, 0);   //set for IRQ on TX done on first DIO pin
+  // setDioIrqParams(IRQ_RADIO_ALL, IRQ_TX_DONE, 0, 0);   //set for IRQ on TX done on first DIO pin
   setTx(0);                                            //TX timeout is not handled in setTX()
 
   if (!wait)
