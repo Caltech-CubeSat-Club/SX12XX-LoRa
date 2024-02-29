@@ -2582,6 +2582,77 @@ uint8_t SX127XLT::transmit(uint8_t *txbuffer, uint8_t size, uint32_t txtimeout, 
 }
 
 
+uint8_t SX127XLT::transmitFSK(uint8_t *txbuffer, uint8_t size, uint32_t txtimeout, int8_t txpower, uint8_t wait)
+{
+#ifdef SX127XDEBUG1
+  Serial.println(F("transmitFSK()"));
+#endif
+
+  uint8_t index, ptr;
+  uint8_t bufferdata;
+  uint32_t startmS;
+
+  if (size == 0)
+  {
+    return false;
+  }
+
+  setMode(MODE_STDBY_RC);
+
+#ifdef USE_SPI_TRANSACTION                      //to use SPI_TRANSACTION enable define at beginning of CPP file 
+  SPI.beginTransaction(SPISettings(LTspeedMaximum, LTdataOrder, LTdataMode));
+#endif
+
+  digitalWrite(_NSS, LOW);
+  SPI.transfer(WREG_FIFO);
+
+  _TXPacketL = size;
+
+  SPI.transfer(_TXPacketL);                           //Write the packet length
+
+  for (index = 0; index < size; index++)
+  {
+    bufferdata = txbuffer[index];
+    SPI.transfer(bufferdata);
+  }
+  digitalWrite(_NSS, HIGH);
+
+#ifdef USE_SPI_TRANSACTION
+  SPI.endTransaction();
+#endif
+
+
+  setTxParams(txpower, RADIO_RAMP_DEFAULT);            //TX power and ramp time
+  setDioIrqParams(IRQ_RADIO_ALL, IRQ_TX_DONE, 0, 0);   //set for IRQ on TX done on first DIO pin
+  setTx(0);                                            //TX timeout is not handled in setTX()
+
+  if (!wait)
+  {
+    return _TXPacketL;
+  }
+
+  if (txtimeout == 0)
+  {
+    while (!digitalRead(_TXDonePin));                  //Wait for pin to go high, TX finished
+  }
+  else
+  {
+    startmS = millis();
+    while (!digitalRead(_TXDonePin) && ((uint32_t) (millis() - startmS) < txtimeout));
+  }
+
+  setMode(MODE_STDBY_RC);                              //ensure we leave function with TX off
+
+  if (!digitalRead(_TXDonePin))
+  {
+    _IRQmsb = IRQ_TX_TIMEOUT;
+    return 0;
+  }
+
+  return _TXPacketL;                                   //no timeout, so TXdone must have been set
+}
+
+
 uint8_t SX127XLT::transmitIRQ(uint8_t *txbuffer, uint8_t size, uint32_t txtimeout, int8_t txpower, uint8_t wait)
 {
 #ifdef SX127XDEBUG1
