@@ -3224,10 +3224,10 @@ uint8_t SX127XLT::transmitSXBuffer(uint8_t startaddr, uint8_t length, uint32_t t
   uint32_t startmS;
 
   setMode(MODE_STDBY_RC);
-  writeRegister(REG_FIFOTXBASEADDR, startaddr);         //set start address of packet in buffer
-  writeRegister(REG_PAYLOADLENGTH, length);
+  // writeRegister(REG_FIFOTXBASEADDR, startaddr);         //set start address of packet in buffer
+  // writeRegister(REG_PAYLOADLENGTH, length);
   setTxParams(txpower, RADIO_RAMP_DEFAULT);             //TX power and ramp time
-  setDioIrqParams(IRQ_RADIO_ALL, IRQ_TX_DONE, 0, 0);    //set for IRQ on TX done
+  // setDioIrqParams(IRQ_RADIO_ALL, IRQ_TX_DONE, 0, 0);    //set for IRQ on TX done
   setTx(0);                                             //TX timeout is not handled in setTX()
 
   if (!wait)
@@ -3457,7 +3457,7 @@ void SX127XLT::startWriteSXBuffer(uint8_t ptr)
 
   setMode(MODE_STDBY_RC);
   _TXPacketL = 0;                               //this variable used to keep track of bytes written
-  writeRegister(REG_FIFOADDRPTR, ptr);          //set buffer access ptr
+  // writeRegister(REG_FIFOADDRPTR, ptr);          //set buffer access ptr
 
 #ifdef USE_SPI_TRANSACTION                      //to use SPI_TRANSACTION enable define at beginning of CPP file 
   SPI.beginTransaction(SPISettings(LTspeedMaximum, LTdataOrder, LTdataMode));
@@ -4138,7 +4138,7 @@ void SX127XLT::setupFSK(uint32_t frequency, int32_t offset = 0, uint8_t deviatio
 
   _PACKET_TYPE = PACKET_TYPE_GFSK;            //need to swap packet type
   setPacketType(PACKET_TYPE_GFSK);                //set the packet type
-  writeRegister(REG_DETECTOPTIMIZE, 0x00);    //set continuous mode
+  writeRegister(REG_DETECTOPTIMIZE, 0x40);    //set packet mode
   setRfFrequency(frequency, offset);
   writeRegister(REG_FDEVLSB, deviation);       //set deviation
   writeRegister(REG_LRTEST30, packet_config);  //set the packet config
